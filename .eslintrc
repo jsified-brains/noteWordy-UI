@@ -4,9 +4,12 @@
   "plugins": ["react", "jsx-a11y", "import", "eslint-plugin-prettier"],
   "rules": {
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "import/prefer-default-export": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/prefer-stateless-function": [0],
     "react/jsx-indent": [0],
+    "react/sort-comp": [0],
+    "react/destructuring-assignment": [0],
     "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
     "quotes": [
       "error",
@@ -18,11 +21,10 @@
     "prettier/prettier": [
       "error",
       {
-        "trailingComma": "es5",
+        "trailingComma": "none",
         "singleQuote": true,
         "jsxSingleQuote": true,
         "printWidth": 160,
-        "useTabs": true,
         "semi": true
       }
     ]
