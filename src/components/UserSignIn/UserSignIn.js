@@ -1,39 +1,47 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Alert, Text, View, Button } from 'react-native';
+import { ActivityIndicator, Alert, Text, View } from 'react-native';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
+import { PropTypes } from 'prop-types';
 
-export default class UserSignIn extends Component {
+class UserSignIn extends Component {
   state = {
-    isUserSignedIn: false,
-    loggedInUser: {},
     checkingSignedInStatus: true
   };
 
   constructor() {
     super();
     GoogleSignin.configure();
+    this.screenFocusSubscription = {};
   }
 
   componentDidMount() {
-    this.isUserSignedIn();
+    this.subscribeToDidFocus();
+  }
+
+  // subscribe to 'didFocus' event of react-navigation
+  // if user comes back to this component using back button, call this.isUserSignedIn()
+  // When navigating back to a screen, componentDidMount won't be triggered because
+  // react-navigation keeps it in stack.
+  // (we configured StackNavigation with header: null/headerMode: 'none'.
+  // With no header, back button on header is not going to be visible.
+  // However, on Android, user can press the hard back button)
+  subscribeToDidFocus = () => {
+    this.screenFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+      this.isUserSignedIn();
+    });
+  };
+
+  componentWillUnmount() {
+    this.screenFocusSubscription.remove();
   }
 
   render() {
-    const { isSigninInProgress, checkingSignedInStatus, isUserSignedIn, loggedInUser } = this.state;
+    const { isSigninInProgress, checkingSignedInStatus } = this.state;
 
     if (checkingSignedInStatus) {
       return (
         <View>
           <ActivityIndicator size='large' color='#00ff00' />
-        </View>
-      );
-    }
-
-    if (isUserSignedIn && loggedInUser && loggedInUser.user) {
-      return (
-        <View>
-          <Text>Welcome {loggedInUser.user.name} </Text>
-          <Button title='Log out' onPress={this.signOut} />
         </View>
       );
     }
@@ -59,12 +67,11 @@ export default class UserSignIn extends Component {
     try {
       this.setState({ isSigninInProgress: true });
       await GoogleSignin.hasPlayServices();
-      const loggedInUser = await GoogleSignin.signIn();
+      await GoogleSignin.signIn();
       this.setState({
-        loggedInUser,
-        isUserSignedIn: true,
         isSigninInProgress: false
       });
+      this.props.navigation.navigate('Home');
     } catch (error) {
       this.handleSignInError(error);
     }
@@ -74,12 +81,13 @@ export default class UserSignIn extends Component {
    * @name isUserSignedIn
    */
   isUserSignedIn = async () => {
-    this.setState({ isUserSignedIn: false, checkingSignedInStatus: true });
+    this.setState({ checkingSignedInStatus: true });
     const isUserSignedIn = await GoogleSignin.isSignedIn();
     if (isUserSignedIn) {
       await this.getCurrentUserInfo();
+      this.props.navigation.navigate('Home');
     }
-    this.setState({ isUserSignedIn, checkingSignedInStatus: false });
+    this.setState({ checkingSignedInStatus: false });
   };
 
   /**
@@ -87,10 +95,9 @@ export default class UserSignIn extends Component {
    */
   getCurrentUserInfo = async () => {
     try {
-      const loggedInUser = await GoogleSignin.signInSilently();
-      this.setState({ loggedInUser });
+      await GoogleSignin.signInSilently();
     } catch (error) {
-      this.setState({ loggedInUser: {} });
+      this.handleSignInError(error);
     }
   };
 
@@ -101,7 +108,6 @@ export default class UserSignIn extends Component {
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-      this.setState({ isUserSignedIn: false, loggedInUser: null });
     } catch (error) {
       this.handleSignInError(error);
     }
@@ -161,3 +167,9 @@ export default class UserSignIn extends Component {
     );
   };
 }
+
+UserSignIn.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
+
+export default UserSignIn;
