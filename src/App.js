@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import { AppNavigationContainer } from './routes/AppStackNavigator';
+import { appReduxStore } from './redux/store';
 
 export default class App extends Component {
   render() {
-    return <AppNavigationContainer />;
+    return (
+      <Provider store={appReduxStore}>
+        <AppNavigationContainer />
+      </Provider>
+    );
   }
 }
