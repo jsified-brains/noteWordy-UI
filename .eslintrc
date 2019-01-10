@@ -17,6 +17,7 @@
       "single",
       { "avoidEscape": true, "allowTemplateLiterals": false }
     ],
+    "camelcase": "off",
     "no-use-before-define": "off",
     "semi": ["error", "always"],
     "prettier/prettier": [

@@ -5,7 +5,8 @@ import { PropTypes } from 'prop-types';
 
 class UserSignIn extends Component {
   state = {
-    checkingSignedInStatus: true
+    isSigninInProgress: false,
+    checkingSignedInStatus: false
   };
 
   constructor() {
@@ -66,15 +67,34 @@ class UserSignIn extends Component {
   onSignInPress = async () => {
     try {
       this.setState({ isSigninInProgress: true });
-      await GoogleSignin.hasPlayServices();
-      await GoogleSignin.signIn();
+
+      // initiate google sign-in process
+      await this.getGooglePlayServices();
+      const googleAuthResponse = await GoogleSignin.signIn();
+
+      this.dispatchOnSignIn(googleAuthResponse);
+
       this.setState({
         isSigninInProgress: false
       });
+
       this.props.navigation.navigate('Home');
     } catch (error) {
       this.handleSignInError(error);
     }
+  };
+
+  /**
+   * @name dispatchOnSignIn
+   */
+  dispatchOnSignIn = googleAuthResponse => {
+    this.props.UserSignIn_onSuccess({
+      googleAuthToken: {
+        id_token: googleAuthResponse.idToken,
+        expires_at: googleAuthResponse.accessTokenExpirationDate
+      },
+      googleUser: googleAuthResponse.user
+    });
   };
 
   /**
@@ -85,7 +105,6 @@ class UserSignIn extends Component {
     const isUserSignedIn = await GoogleSignin.isSignedIn();
     if (isUserSignedIn) {
       await this.getCurrentUserInfo();
-      this.props.navigation.navigate('Home');
     }
     this.setState({ checkingSignedInStatus: false });
   };
@@ -95,9 +114,12 @@ class UserSignIn extends Component {
    */
   getCurrentUserInfo = async () => {
     try {
-      await GoogleSignin.signInSilently();
+      const googleAuthResponse = await GoogleSignin.signInSilently();
+      this.dispatchOnSignIn(googleAuthResponse);
+      this.props.navigation.navigate('Home');
     } catch (error) {
-      this.handleSignInError(error);
+      // if error figuring out whether user is signedIn or not, better reset it to logged out
+      this.signOut();
     }
   };
 
@@ -110,6 +132,8 @@ class UserSignIn extends Component {
       await GoogleSignin.signOut();
     } catch (error) {
       this.handleSignInError(error);
+    } finally {
+      this.props.UserSignIn_logOut({});
     }
   };
 
@@ -153,6 +177,10 @@ class UserSignIn extends Component {
    * @param alertMessage - message to be shown on alert box
    */
   showSignInError = alertMessage => {
+    this.props.UserSignIn_onError({
+      signInFailedReason: alertMessage
+    });
+
     Alert.alert(
       'Google Signin Error',
       alertMessage,
@@ -169,7 +197,10 @@ class UserSignIn extends Component {
 }
 
 UserSignIn.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  UserSignIn_onSuccess: PropTypes.func.isRequired,
+  UserSignIn_onError: PropTypes.func.isRequired,
+  UserSignIn_logOut: PropTypes.func.isRequired
 };
 
 export default UserSignIn;
