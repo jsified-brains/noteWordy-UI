@@ -17,6 +17,7 @@
       "single",
       { "avoidEscape": true, "allowTemplateLiterals": false }
     ],
+    "jsx-quotes": ["error", "prefer-double"],
     "camelcase": "off",
     "no-use-before-define": "off",
     "semi": ["error", "always"],
@@ -25,9 +26,10 @@
       {
         "trailingComma": "none",
         "singleQuote": true,
-        "jsxSingleQuote": true,
+        "jsxSingleQuote": false,
         "printWidth": 160,
-        "semi": true
+        "semi": true,
+        "proseWrap": "preserve"
       }
     ]
   },
