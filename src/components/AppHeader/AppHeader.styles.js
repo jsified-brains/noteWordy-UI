@@ -13,6 +13,10 @@ export default StyleSheet.create({
     width: 40,
     borderRadius: 20
   },
+  body: {
+    flex: 4,
+    alignItems: 'center'
+  },
   subTitleText: {
     color: '#ddd'
   },
