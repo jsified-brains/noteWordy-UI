@@ -31,12 +31,18 @@ class AddWordScreen extends Component {
     return (
       <Container>
         <AppHeader title="My Vocabulary" navigation={this.props.navigation} />
+
+        <Segment>
+          <Item style={{ flex: 1 }} />
+          <Button first last style={styles.segmentButton}>
+            <Text>Add a word</Text>
+          </Button>
+          <Item onPress={() => this.props.navigation.navigate('Home')} style={styles.closeIconItem}>
+            <Icon name="close" style={styles.closeIcon} />
+          </Item>
+        </Segment>
+
         <Content padder contentContainerStyle={styles.contentContainer}>
-          <Segment style={styles.segment}>
-            <Button first>
-              <Text>Add a word</Text>
-            </Button>
-          </Segment>
           <Form style={styles.form}>
             <Item floatingLabel style={[styles.rowSpan1]}>
               <Label>word</Label>
@@ -91,6 +97,15 @@ class AddWordScreen extends Component {
     this.setState({
       [fieldName]: value
     });
+  };
+
+  /**
+   * @name onCancel
+   * @description function to call on press of cancel button
+   */
+  onCancelPress = () => {
+    // console.log('in cancel');
+    this.props.navigation.navigate('Home');
   };
 
   /**

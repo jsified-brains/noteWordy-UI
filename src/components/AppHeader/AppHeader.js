@@ -9,18 +9,20 @@ class AppHeader extends Component {
   render() {
     return (
       <Header style={styles.headerBar} iosBarStyle="dark-content" androidStatusBarColor="lightgray">
-        <Left>
+        <Left style={{ flex: 2 }}>
           <TouchableHighlight style={styles.profileImgContainer}>
             <Image source={{ uri: this.props.googleUser.photo }} style={styles.profileImg} />
           </TouchableHighlight>
         </Left>
 
-        <Body style={{ flex: 3 }}>
+        <Body style={styles.body}>
           <Title>{this.props.title} </Title>
-          <Subtitle style={{ color: 'white' }}>{this.props.googleUser.email || 'not found'}</Subtitle>
+          <Subtitle style={{ color: 'white' }}>
+            {this.props.googleUser.email || 'not found'}
+          </Subtitle>
         </Body>
 
-        <Right>
+        <Right style={{ flex: 2 }}>
           <Button transparent dark onPress={() => this.signOut()}>
             <Text>Log out</Text>
           </Button>

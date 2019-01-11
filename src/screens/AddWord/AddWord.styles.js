@@ -1,16 +1,24 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   contentContainer: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center"
   },
-  segment: {
-    flex: 1
+  segmentButton: {
+    flex: 1,
+    justifyContent: "center"
   },
   form: {
     flex: 9,
     marginBottom: 20
+  },
+  closeIconItem: {
+    flex: 1,
+    justifyContent: "flex-end"
+  },
+  closeIcon: {
+    color: "red"
   },
   rowSpan1: {
     flex: 1,
