@@ -42,7 +42,7 @@ class UserSignIn extends Component {
     if (checkingSignedInStatus) {
       return (
         <View>
-          <ActivityIndicator size='large' color='#00ff00' />
+          <ActivityIndicator size="large" color="#00ff00" />
         </View>
       );
     }
