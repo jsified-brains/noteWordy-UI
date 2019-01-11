@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
-import { Container, Content, List, ListItem, Text } from 'native-base';
+import { Container, Content, List, ListItem, Text, Fab, Icon } from 'native-base';
 import { AppHeader } from '../../components';
 import styles from './Home.styles';
 
@@ -25,10 +25,24 @@ class HomeScreen extends Component {
               </ListItem>
             </List>
           </View>
+
+          <Fab
+            active
+            direction="up"
+            containerStyle={{}}
+            style={{ backgroundColor: '#5067FF' }}
+            position="bottomRight"
+            onPress={this.onFabClick}>
+            <Icon ios="ios-add" android="md-add" style={{ fontSize: 30 }} />
+          </Fab>
         </Content>
       </Container>
     );
   }
+
+  onFabClick = () => {
+    this.props.navigation.navigate('AddWord');
+  };
 }
 
 HomeScreen.propTypes = {
