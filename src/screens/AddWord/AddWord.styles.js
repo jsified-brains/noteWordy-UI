@@ -1,13 +1,13 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   contentContainer: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: 'center'
   },
   segmentButton: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: 'center'
   },
   form: {
     flex: 9,
@@ -15,10 +15,10 @@ export default StyleSheet.create({
   },
   closeIconItem: {
     flex: 1,
-    justifyContent: "flex-end"
+    justifyContent: 'flex-end'
   },
   closeIcon: {
-    color: "red"
+    color: 'red'
   },
   rowSpan1: {
     flex: 1,

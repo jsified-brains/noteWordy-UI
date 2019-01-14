@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { Auth } from 'aws-amplify';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 import { PropTypes } from 'prop-types';
+import { AmplifyConfig, GoogleConfig } from '../../config/appConfig';
 
 class UserSignIn extends Component {
   state = {
@@ -11,7 +13,9 @@ class UserSignIn extends Component {
 
   constructor() {
     super();
-    GoogleSignin.configure();
+    // ****** CONFIGURE Google and AWS accounts ******
+    GoogleConfig();
+    AmplifyConfig();
     this.screenFocusSubscription = {};
   }
 
@@ -72,6 +76,7 @@ class UserSignIn extends Component {
       await this.getGooglePlayServices();
       const googleAuthResponse = await GoogleSignin.signIn();
 
+      await this.awsSignIn(googleAuthResponse);
       this.dispatchOnSignIn(googleAuthResponse);
 
       this.setState({
@@ -81,6 +86,24 @@ class UserSignIn extends Component {
       this.props.navigation.navigate('Home');
     } catch (error) {
       this.handleSignInError(error);
+    }
+  };
+
+  /**
+   * @name awsSignIn
+   */
+  awsSignIn = async googleAuthResponse => {
+    try {
+      const {
+        idToken,
+        accessTokenExpirationDate: expires_at,
+        user: googleUser
+      } = googleAuthResponse;
+      const { email } = googleUser;
+
+      await Auth.federatedSignIn('google', { token: idToken, expires_at }, { email });
+    } catch (err) {
+      throw new Error('Error at AWS Authentication');
     }
   };
 
@@ -115,7 +138,10 @@ class UserSignIn extends Component {
   getCurrentUserInfo = async () => {
     try {
       const googleAuthResponse = await GoogleSignin.signInSilently();
+
+      await this.awsSignIn(googleAuthResponse);
       this.dispatchOnSignIn(googleAuthResponse);
+
       this.props.navigation.navigate('Home');
     } catch (error) {
       // if error figuring out whether user is signedIn or not, better reset it to logged out
