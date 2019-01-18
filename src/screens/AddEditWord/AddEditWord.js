@@ -4,7 +4,7 @@ import {
   Content,
   Form,
   Item,
-  Label,
+  Toast,
   Input,
   Text,
   Textarea,
@@ -16,18 +16,33 @@ import {
 import { Alert } from 'react-native';
 import { PropTypes } from 'prop-types';
 import AppHeader from '../../components/AppHeader/AppHeaderConnected';
-import styles from './AddWord.styles';
+import styles from './styles';
 
-class AddWordScreen extends Component {
+class AddEditWordScreen extends Component {
   state = {
     word: '',
     meaning: '',
     example: '',
     comments: '',
-    showAlert: false
+    showAlert: false,
+    error: ''
   };
 
+  componentDidMount() {
+    if (this.props.wordToEdit) {
+      const word = this.props.wordToEdit;
+      this.setState({
+        word: word.word,
+        meaning: word.meaning,
+        example: word.example,
+        comments: word.comments
+      });
+    }
+  }
+
   render() {
+    const wordToEdit = this.props.wordToEdit || null;
+    const buttonIcon = !wordToEdit ? 'add' : 'create';
     return (
       <Container>
         <AppHeader title="My Vocabulary" navigation={this.props.navigation} />
@@ -35,7 +50,7 @@ class AddWordScreen extends Component {
         <Segment>
           <Item style={{ flex: 1 }} />
           <Button first last style={styles.segmentButton}>
-            <Text>Add a word</Text>
+            <Text>{!wordToEdit ? 'Add a word' : 'Edit'}</Text>
           </Button>
           <Item onPress={() => this.props.navigation.navigate('Home')} style={styles.closeIconItem}>
             <Icon name="close" style={styles.closeIcon} />
@@ -44,9 +59,12 @@ class AddWordScreen extends Component {
 
         <Content padder contentContainerStyle={styles.contentContainer}>
           <Form style={styles.form}>
-            <Item floatingLabel style={[styles.rowSpan1]}>
-              <Label>word</Label>
-              <Input value={this.state.word} onChangeText={txt => this.onTextChange('word', txt)} />
+            <Item style={[styles.rowSpan1]}>
+              <Input
+                placeholder="word"
+                value={this.state.word}
+                onChangeText={txt => this.onTextChange('word', txt)}
+              />
             </Item>
 
             {/* eslint-disable */}
@@ -65,11 +83,11 @@ class AddWordScreen extends Component {
               {this.state.showAlert ? (
                 <Spinner color="red" />
               ) : (
-                <Icon name="add" />
+                <Icon name={buttonIcon} />
               )}
               {/* eslint-enable */}
 
-              <Text>Add word to my vocabulary</Text>
+              <Text>{!wordToEdit ? 'Add word to my vocabulary' : 'Update'}</Text>
             </Button>
           </Form>
         </Content>
@@ -82,8 +100,26 @@ class AddWordScreen extends Component {
    * @description function to call onPress of Add Word button of the form
    */
   postWord = () => {
+    if (!this.state.word || !this.state.meaning) {
+      this.toastMessage('A word and its meaning must be entered!');
+      return;
+    }
+
+    const word = {
+      word: this.state.word,
+      meaning: this.state.meaning,
+      example: this.state.example,
+      comments: this.state.comments
+    };
+
+    if (this.props.wordToEdit) {
+      // to-do: dispatch redux action to update word
+    } else {
+      // to-do: dispatch redux action to add word
+    }
+    // for time being, show alert until we connect the component to redux
     this.setState({ showAlert: true });
-    this.showAlert(this.state.word, 'to-do: Add word to Vocab DynamoDB table');
+    this.showAlert(word.word, 'to-do: Add/Update word to Vocab DynamoDB table');
   };
 
   /**
@@ -95,7 +131,7 @@ class AddWordScreen extends Component {
    */
   onTextChange = (fieldName, value) => {
     this.setState({
-      [fieldName]: value
+      [fieldName]: value.trim()
     });
   };
 
@@ -104,7 +140,6 @@ class AddWordScreen extends Component {
    * @description function to call on press of cancel button
    */
   onCancelPress = () => {
-    // console.log('in cancel');
     this.props.navigation.navigate('Home');
   };
 
@@ -124,6 +159,21 @@ class AddWordScreen extends Component {
       onChangeText={txt => this.onTextChange(fieldName, txt)}
     />
   );
+
+  /**
+   * @name toastMessage
+   * @description toast a message
+   * @param errMesssage message to be shown on the toast box
+   */
+  toastMessage = messsage => {
+    Toast.show({
+      text: messsage,
+      buttonText: 'Okay',
+      position: 'bottom',
+      type: 'danger',
+      duration: 5000
+    });
+  };
 
   /**
    * @name showAlert
@@ -150,8 +200,13 @@ class AddWordScreen extends Component {
     );
 }
 
-AddWordScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+AddEditWordScreen.defaultProps = {
+  wordToEdit: null
 };
 
-export default AddWordScreen;
+AddEditWordScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  wordToEdit: PropTypes.object
+};
+
+export default AddEditWordScreen;

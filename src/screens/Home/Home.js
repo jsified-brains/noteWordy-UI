@@ -41,7 +41,7 @@ class HomeScreen extends Component {
   }
 
   onFabClick = () => {
-    this.props.navigation.navigate('AddWord');
+    this.props.navigation.navigate('AddEditWord');
   };
 }
 

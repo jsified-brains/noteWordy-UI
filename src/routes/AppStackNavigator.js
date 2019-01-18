@@ -1,11 +1,11 @@
 import { createStackNavigator, createAppContainer } from 'react-navigation';
-import { HomeScreen, SignInScreen, AddWordScreen } from '../screens';
+import { HomeScreen, SignInScreen, AddEditWordScreen } from '../screens';
 
 const AppStackNavigator = createStackNavigator(
   {
     Home: { screen: HomeScreen },
     SignIn: { screen: SignInScreen },
-    AddWord: { screen: AddWordScreen }
+    AddEditWord: { screen: AddEditWordScreen }
   },
   {
     initialRouteName: 'SignIn',
