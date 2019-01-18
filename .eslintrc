@@ -1,7 +1,13 @@
 {
   "parser": "babel-eslint",
   "extends": ["airbnb", "prettier", "prettier/react"],
-  "plugins": ["react", "jsx-a11y", "import", "eslint-plugin-prettier"],
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import",
+    "eslint-plugin-prettier",
+    "eslint-plugin-react"
+  ],
   "rules": {
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "import/prefer-default-export": "off",
@@ -27,9 +33,9 @@
         "trailingComma": "none",
         "singleQuote": true,
         "jsxSingleQuote": false,
-        "printWidth": 160,
+        "printWidth": 100,
         "semi": true,
-        "proseWrap": "preserve"
+        "jsxBracketSameLine": true
       }
     ]
   },
