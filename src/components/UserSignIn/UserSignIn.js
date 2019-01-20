@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ActivityIndicator, Alert, Text, View } from 'react-native';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 import { PropTypes } from 'prop-types';
+import { AmplifyConfig, GoogleConfig } from '../../config/appConfig';
 
 class UserSignIn extends Component {
   state = {
@@ -11,8 +12,10 @@ class UserSignIn extends Component {
 
   constructor() {
     super();
-    GoogleSignin.configure();
-    this.screenFocusSubscription = {};
+    // ****** Configure Google and AWS Amplify services ******
+    GoogleConfig();
+    AmplifyConfig();
+    this.screenFocusSubscription = null;
   }
 
   componentDidMount() {

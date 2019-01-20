@@ -13,7 +13,6 @@ import {
   Icon,
   Spinner
 } from 'native-base';
-import { Alert } from 'react-native';
 import { PropTypes } from 'prop-types';
 import AppHeader from '../../components/AppHeader/AppHeaderConnected';
 import styles from './styles';
@@ -23,11 +22,13 @@ class AddEditWordScreen extends Component {
     word: '',
     meaning: '',
     example: '',
-    comments: '',
-    showAlert: false,
-    error: ''
+    comments: ''
   };
 
+  /**
+   * @name componentDidMount
+   * @desc component lifecycle method
+   */
   componentDidMount() {
     if (this.props.wordToEdit) {
       const word = this.props.wordToEdit;
@@ -40,6 +41,20 @@ class AddEditWordScreen extends Component {
     }
   }
 
+  /**
+   * @name componentWillReceiveProps
+   * @param {any} newprops new value of props
+   */
+  componentWillReceiveProps(newprops) {
+    if (newprops.error !== '') {
+      this.toastMessage(newprops.error);
+    }
+  }
+
+  /**
+   * @name render
+   * @desc component render method
+   */
   render() {
     const wordToEdit = this.props.wordToEdit || null;
     const buttonIcon = !wordToEdit ? 'add' : 'create';
@@ -77,10 +92,10 @@ class AddEditWordScreen extends Component {
               iconLeft
               block
               style={[styles.rowSpan1, styles.button]}
-              disabled={this.state.showAlert}
+              disabled={this.props.loading}
               onPress={this.postWord}>
               {/* eslint-disable */}
-              {this.state.showAlert ? (
+              {this.props.loading ? (
                 <Spinner color="red" />
               ) : (
                 <Icon name={buttonIcon} />
@@ -113,13 +128,10 @@ class AddEditWordScreen extends Component {
     };
 
     if (this.props.wordToEdit) {
-      // to-do: dispatch redux action to update word
+      this.props.updateWord({ ...this.props.wordToEdit, ...word });
     } else {
-      // to-do: dispatch redux action to add word
+      this.props.addWordToVocab(word);
     }
-    // for time being, show alert until we connect the component to redux
-    this.setState({ showAlert: true });
-    this.showAlert(word.word, 'to-do: Add/Update word to Vocab DynamoDB table');
   };
 
   /**
@@ -174,30 +186,6 @@ class AddEditWordScreen extends Component {
       duration: 5000
     });
   };
-
-  /**
-   * @name showAlert
-   * @description show alert box
-   * @param title title of the alert box
-   * @param message message of the alert box
-   */
-  showAlert = (title, message) =>
-    Alert.alert(
-      title,
-      message,
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            this.setState({ showAlert: false });
-            this.props.navigation.navigate('Home');
-          }
-        }
-      ],
-      {
-        cancelable: false
-      }
-    );
 }
 
 AddEditWordScreen.defaultProps = {
@@ -205,8 +193,11 @@ AddEditWordScreen.defaultProps = {
 };
 
 AddEditWordScreen.propTypes = {
+  loading: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
-  wordToEdit: PropTypes.object
+  wordToEdit: PropTypes.object,
+  addWordToVocab: PropTypes.func.isRequired,
+  updateWord: PropTypes.func.isRequired
 };
 
 export default AddEditWordScreen;
