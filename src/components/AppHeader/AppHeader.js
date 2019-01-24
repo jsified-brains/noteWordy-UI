@@ -3,6 +3,7 @@ import { Text, TouchableHighlight, Image } from 'react-native';
 import { Header, Left, Title, Subtitle, Right, Button, Body } from 'native-base';
 import { GoogleSignin } from 'react-native-google-signin';
 import { PropTypes } from 'prop-types';
+import { Auth } from 'aws-amplify';
 import styles from './AppHeader.styles';
 
 class AppHeader extends Component {
@@ -36,6 +37,7 @@ class AppHeader extends Component {
    */
   signOut = async () => {
     try {
+      await Auth.signOut();
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
     } catch (error) {

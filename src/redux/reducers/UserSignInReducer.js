@@ -3,7 +3,7 @@ import { USER_SIGNIN } from '../actions/actionTypes';
 const defaultState = {
   googleUser: {},
   googleAuthToken: {},
-  awsFederatedInfo: {}, // would be needed when we connect to AWS
+  awsFederatedInfo: {},
   signInFailedReason: ''
 };
 

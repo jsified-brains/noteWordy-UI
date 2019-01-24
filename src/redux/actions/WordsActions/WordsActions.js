@@ -58,9 +58,10 @@ export const fetchWordById = wordId => async dispatch => {
 export const addWordToVocab = word => async dispatch => {
   dispatch(createAction(VOCAB_WORDS.ADD.IN_PROGRESS));
   try {
-    await API.post('vocab_words', '/words', {
+    const result = await API.post('vocab_words', '/words', {
       body: word
     });
+    dispatch(createAction(VOCAB_WORDS.ADD.SUCCESS, result));
     NavigationService.navigate('Home');
   } catch (err) {
     dispatch(
