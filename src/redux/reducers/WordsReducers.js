@@ -24,7 +24,7 @@ export default function WordsReducer(state = defaultState, action) {
         ...state,
         loading: false,
         error: '',
-        selectedWord: {}
+        selectedWord: null
       };
     case VOCAB_WORDS.GET_BY_ID.SUCCESS:
       return {

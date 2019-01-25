@@ -7,7 +7,9 @@ import { APP_CONSTANTS } from './AppConstants';
  * @description Configure GoogleSignIn services
  */
 export const GoogleConfig = () => {
-  GoogleSignin.configure();
+  GoogleSignin.configure({
+    webClientId: APP_CONSTANTS.google.webClientId
+  });
 };
 
 /**
@@ -16,6 +18,11 @@ export const GoogleConfig = () => {
  */
 export const AmplifyConfig = () => {
   Amplify.configure({
+    Auth: {
+      identityPoolId: APP_CONSTANTS.cognito.IDENTITY_POOL_ID,
+      region: APP_CONSTANTS.cognito.REGION,
+      mandatorySignIn: true
+    },
     API: {
       endpoints: [
         {

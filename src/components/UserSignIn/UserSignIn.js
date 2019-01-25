@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { Auth } from 'aws-amplify';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 import { PropTypes } from 'prop-types';
 import { AmplifyConfig, GoogleConfig } from '../../config/appConfig';
@@ -75,6 +76,9 @@ class UserSignIn extends Component {
       await this.getGooglePlayServices();
       const googleAuthResponse = await GoogleSignin.signIn();
 
+      // Sign in to AWS Identity Pool
+      await this.awsSignIn(googleAuthResponse);
+
       this.dispatchOnSignIn(googleAuthResponse);
 
       this.setState({
@@ -84,6 +88,28 @@ class UserSignIn extends Component {
       this.props.navigation.navigate('Home');
     } catch (error) {
       this.handleSignInError(error);
+    }
+  };
+
+  /**
+   * @name awsSignIn
+   */
+  awsSignIn = async googleAuthResponse => {
+    try {
+      const {
+        idToken,
+        accessTokenExpirationDate: expires_at,
+        user: googleUser
+      } = googleAuthResponse;
+      const { email, name } = googleUser;
+
+      await Auth.federatedSignIn(
+        'accounts.google.com',
+        { token: idToken, expires_at },
+        { email, name }
+      );
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -118,6 +144,10 @@ class UserSignIn extends Component {
   getCurrentUserInfo = async () => {
     try {
       const googleAuthResponse = await GoogleSignin.signInSilently();
+
+      // Sign in to AWS Identity Pool
+      await this.awsSignIn(googleAuthResponse);
+
       this.dispatchOnSignIn(googleAuthResponse);
       this.props.navigation.navigate('Home');
     } catch (error) {
@@ -131,6 +161,7 @@ class UserSignIn extends Component {
    */
   signOut = async () => {
     try {
+      await Auth.signOut();
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
     } catch (error) {
