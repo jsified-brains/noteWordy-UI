@@ -102,6 +102,7 @@ class UserSignIn extends Component {
         user: googleUser
       } = googleAuthResponse;
       const { email, name } = googleUser;
+      await Auth.signOut(); // sign-out from any previously existing session
 
       await Auth.federatedSignIn(
         'accounts.google.com',

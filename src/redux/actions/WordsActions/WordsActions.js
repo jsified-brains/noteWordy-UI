@@ -62,6 +62,7 @@ export const addWordToVocab = word => async dispatch => {
       body: word
     });
     dispatch(createAction(VOCAB_WORDS.ADD.SUCCESS, result));
+    dispatch(await fetchUserVocabWords());
     NavigationService.navigate('Home');
   } catch (err) {
     dispatch(
@@ -84,6 +85,7 @@ export const updateWord = word => async dispatch => {
       body: word
     });
     dispatch(createAction(VOCAB_WORDS.UPDATE.SUCCESS));
+    dispatch(await fetchUserVocabWords());
     NavigationService.navigate('Home');
   } catch (err) {
     dispatch(

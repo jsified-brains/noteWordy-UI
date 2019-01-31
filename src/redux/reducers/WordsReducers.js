@@ -16,6 +16,7 @@ export default function WordsReducer(state = defaultState, action) {
     case VOCAB_WORDS.DELETE.IN_PROGRESS:
       return {
         ...state,
+        error: '',
         loading: true
       };
     case VOCAB_WORDS.ADD.SUCCESS:
@@ -23,8 +24,7 @@ export default function WordsReducer(state = defaultState, action) {
       return {
         ...state,
         loading: false,
-        error: '',
-        selectedWord: null
+        error: ''
       };
     case VOCAB_WORDS.GET_BY_ID.SUCCESS:
       return {
@@ -53,6 +53,7 @@ export default function WordsReducer(state = defaultState, action) {
     case VOCAB_WORDS.WORD_SELETED_TO_VIEW:
       return {
         ...state,
+        error: '',
         selectedWord: action.payload
       };
     case VOCAB_WORDS.ADD.ERROR:
