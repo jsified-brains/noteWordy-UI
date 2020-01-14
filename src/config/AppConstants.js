@@ -1,3 +1,4 @@
+// these are inactive client ids/urls/constants - may not work in producation
 export const APP_CONSTANTS = {
   google: {
     iosClientId: '932683245392-plkicum4gvpd9hficqbfsbvrvgclnqi3.apps.googleusercontent.com',
