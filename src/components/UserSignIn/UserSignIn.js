@@ -75,7 +75,7 @@ class UserSignIn extends Component {
       // initiate google sign-in process
       await this.getGooglePlayServices();
       const googleAuthResponse = await GoogleSignin.signIn();
-
+      console.log('Google sign in success -  ', googleAuthResponse);
       // Sign in to AWS Identity Pool
       await this.awsSignIn(googleAuthResponse);
 
