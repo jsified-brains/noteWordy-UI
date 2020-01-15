@@ -1,9 +1,8 @@
-// these are inactive client ids/urls/constants - may not work in producation
 export const APP_CONSTANTS = {
   google: {
-    iosClientId: '932683245392-plkicum4gvpd9hficqbfsbvrvgclnqi3.apps.googleusercontent.com',
-    androidClientId: '932683245392-duauuakhfh9d38csaaa4e1sdvhcit0ks.apps.googleusercontent.com',
-    webClientId: '932683245392-6ial36r68sb6imou1uisvjaj4lkck44c.apps.googleusercontent.com'
+    iosClientId: '932683245392-4h2nkn76lcok8uhhvs3vob9le2uor9t1.apps.googleusercontent.com',
+    androidClientId: '932683245392-4ip41mctk7ksnr1sd3b8v1c1p9dsm9kf.apps.googleusercontent.com',
+    webClientId: '932683245392-4m2nfmnik0gvdtq9i528jg196vcp694l.apps.googleusercontent.com'
   },
   apiGateway: {
     REGION: 'us-east-1',
